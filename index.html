@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <title>Interactive Pricing Component</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --soft-cyan: hsl(174, 77%, 80%);
+            --strong-cyan: hsl(174, 86%, 45%);
+            --light-grayish-red: hsl(14, 92%, 95%);
+            --light-red: hsl(15, 100%, 70%);
+            --pale-blue: hsl(226, 100%, 87%);
+            --white: hsl(0, 0%, 100%);
+            --very-pale-blue: hsl(230, 100%, 99%);
+            --light-grayish-blue: hsl(224, 65%, 95%);
+            --light-grayish-blue-toggle: hsl(223, 50%, 87%);
+            --grayish-blue: hsl(225, 20%, 60%);
+            --dark-desaturated-blue: hsl(227, 35%, 25%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--very-pale-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 540px;
+        }
+
+        h1 {
+            color: var(--dark-desaturated-blue);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--grayish-blue);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .pricing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .pageviews {
+            color: var(--grayish-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .price {
+            display: flex;
+            align-items: center;
+        }
+
+        .amount {
+            color: var(--dark-desaturated-blue);
+            font-size: 40px;
+            font-weight: 800;
+            margin-right: 10px;
+        }
+
+        .period {
+            color: var(--grayish-blue);
+        }
+
+        .slider-container {
+            margin-bottom: 40px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: var(--light-grayish-blue);
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--strong-cyan) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="13"><g fill="%23FFF" fill-rule="evenodd"><path d="M16 2.558v7.884a1 1 0 001.735.679l3.639-3.943a1 1 0 000-1.356l-3.639-3.943A1 1 0 0016 2.558zM6 2.558v7.884a1 1 0 01-1.735.679L.626 7.178a1 1 0 010-1.356l3.639-3.943A1 1 0 016 2.558z"/></g></svg>') center no-repeat;
+            cursor: pointer;
+            box-shadow: 0 15px 30px rgba(0, 255, 231, 0.6);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--strong-cyan) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="13"><g fill="%23FFF" fill-rule="evenodd"><path d="M16 2.558v7.884a1 1 0 001.735.679l3.639-3.943a1 1 0 000-1.356l-3.639-3.943A1 1 0 0016 2.558zM6 2.558v7.884a1 1 0 01-1.735.679L.626 7.178a1 1 0 010-1.356l3.639-3.943A1 1 0 016 2.558z"/></g></svg>') center no-repeat;
+            cursor: pointer;
+            box-shadow: 0 15px 30px rgba(0, 255, 231, 0.6);
+        }
+
+        .billing {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .billing-option {
+            color: var(--grayish-blue);
+            margin: 0 10px;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--light-grayish-blue-toggle);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--strong-cyan);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .discount {
+            background-color: var(--light-grayish-red);
+            color: var(--light-red);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .features {
+            list-style-type: none;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            color: var(--grayish-blue);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature::before {
+            content: "✓";
+            color: var(--strong-cyan);
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .cta-button {
+            background-color: var(--dark-desaturated-blue);
+            color: var(--pale-blue);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .cta-button:hover {
+            background-color: var(--grayish-blue);
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: var(--grayish-blue);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .pricing {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .pageviews {
+                margin-bottom: 20px;
+            }
+
+            .billing {
+                flex-direction: column;
+            }
+
+            .discount {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple, traffic-based pricing</h1>
+        <p class="subtitle">Sign-up for our 30-day trial. No credit card required.</p>
+
+        <div class="pricing">
+            <span class="pageviews">100K Pageviews</span>
+            <div class="price">
+                <span class="amount">$16.00</span>
+                <span class="period">/ month</span>
+            </div>
+        </div>
+
+        <div class="slider-container">
+            <input type="range" min="0" max="4" value="2" class="slider" id="myRange">
+        </div>
+
+        <div class="billing">
+            <span class="billing-option">Monthly Billing</span>
+            <label class="toggle">
+                <input type="checkbox" id="billingToggle">
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="billing-option">Yearly Billing</span>
+            <span class="discount">25% discount</span>
+        </div>
+
+        <ul class="features">
+            <li class="feature">Unlimited websites</li>
+            <li class="feature">100% data ownership</li>
+            <li class="feature">Email reports</li>
+        </ul>
+
+        <button class="cta-button">Start my trial</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+        Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+        Coded by <a href="https://github.com/Hackerbot24">Hackerbot24</a>.
+    </footer>
+
+    <script>
+        const slider = document.getElementById("myRange");
+        const pageviews = document.querySelector(".pageviews");
+        const amount = document.querySelector(".amount");
+        const billingToggle = document.getElementById("billingToggle");
+
+        const pageviewsOptions = ["10K", "50K", "100K", "500K", "1M"];
+        const monthlyPrices = [8, 12, 16, 24, 36];
+
+        function updatePricing() {
+            const index = parseInt(slider.value);
+            pageviews.textContent = `${pageviewsOptions[index]} Pageviews`;
+            
+            let price = monthlyPrices[index];
+            if (billingToggle.checked) {
+                price *= 0.75; // 25% discount for yearly billing
+            }
+            
+            amount.textContent = `$${price.toFixed(2)}`;
+        }
+
+        slider.oninput = updatePricing;
+        billingToggle.onchange = updatePricing;
+
+        // Initialize
+        updatePricing();
+    </script>
+</body>
+</html>
